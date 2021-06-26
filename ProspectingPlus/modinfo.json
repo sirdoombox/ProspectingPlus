@@ -1,0 +1,11 @@
+{
+  "type": "code",
+  "modid": "prospectingplus",
+  "name": "ProspectingPlus",
+  "author": "Doombox",
+  "description": "A complete overhaul of how prospecting is reported and stored.",
+  "version": "1.0.0",
+  "dependency": {
+    "game": ""
+  }
+}
