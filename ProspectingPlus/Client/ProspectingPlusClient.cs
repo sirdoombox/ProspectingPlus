@@ -1,25 +1,47 @@
+using System;
 using System.Reflection;
 using HarmonyLib;
 using ProspectingPlus.Patches;
+using ProspectingPlus.Shared.Constants;
+using ProspectingPlus.Shared.Extensions;
+using ProspectingPlus.Shared.Models;
+using ProspectingPlus.Shared.Packets;
 using Vintagestory.API.Client;
-using Vintagestory.API.Common;
-using Vintagestory.API.Config;
+using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Client
 {
     public class ProspectingPlusClient
     {
         private readonly ICoreClientAPI _api;
-        
+        private readonly IClientNetworkChannel _chan;
+
+        public Action OnOverlayToggled { get; set; }
+        public Action<ProPickChunkReport> OnChunkReportReceived { get; set; }
+
         public ProspectingPlusClient(ICoreClientAPI api)
         {
             _api = api;
-            new Harmony("com.prospectingplus.patches").PatchAll(Assembly.GetExecutingAssembly());
-            ProspectingPickPatch.OnChunkReportGenerated += chunkReport =>
+
+            var mapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
+            mapManager.RegisterMapLayer<ProspectingOverlayLayer>(ModConstants.MapLayerName);
+
+            _api.Input.RegisterHotKey(ModConstants.HotkeyCode, "Toggle Prospecting Plus Overlay", GlKeys.Comma);
+            api.Input.SetHotKeyHandler(ModConstants.HotkeyCode, _ =>
             {
-                foreach (var ore in chunkReport.OreReports)
-                    chunkReport.ReportByPlayer.SendMessage(GlobalConstants.InfoLogChatGroup, $"{ore.OreKey} | {ore.Density} | {ore.Ppt}",
-                        EnumChatType.Notification);
+                OnOverlayToggled?.Invoke();
+                return true;
+            });
+            
+            _chan = _api.Network.RegisterChannelAndTypes().SetMessageHandler<ChunkReportPacket>(report =>
+            {
+                OnChunkReportReceived?.Invoke(new ProPickChunkReport(report, api));
+            });
+            
+            new Harmony("com.prospectingplus.patches").PatchAll(Assembly.GetExecutingAssembly());
+            ProspectingPickPatch.OnChunkReportGenerated += report =>
+            {
+                _chan.SendPacket(new ChunkReportPacket(report));
             };
         }
     }

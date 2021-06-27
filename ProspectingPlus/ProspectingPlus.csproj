@@ -97,6 +97,5 @@
 
   <ItemGroup>
     <Folder Include="assets/" />
-    <Folder Include="Shared\Packets" />
   </ItemGroup>
 </Project>

@@ -18,7 +18,7 @@ namespace ProspectingPlus.Shared.Extensions
         
         public static string ToLangKey(this OreDensity oreDensity)
         {
-            return $"propick-density-{oreDensity.ToString().ToLower()}";
+            return oreDensity is OreDensity.Miniscule ? "Miniscule Amounts Of" : $"propick-density-{oreDensity.ToString().ToLower()}";
         }
 
         public static OreDensity ToDensity(this double totalFactor)
