@@ -51,7 +51,9 @@ namespace ProspectingPlus.Patches
                     num1 / (float) regionSize * innerSize,
                     num2 / (float) regionSize * innerSize);
                 if (!ppws.depositsByCode.ContainsKey(oreMap.Key))
-                    oreReports.Add(new ProPickOreReport("ore-"+oreMap.Key, 1.0, OreDensity.Unknown));
+                {
+                    oreReports.Add(new ProPickOreReport("ore-" + oreMap.Key, 1.0, OreDensity.Unknown));
+                }
                 else
                 {
                     ppws.depositsByCode[oreMap.Key]
@@ -62,9 +64,9 @@ namespace ProspectingPlus.Patches
                             out var ppt,
                             out var totalFactor);
                     if (totalFactor > 0.025)
-                        oreReports.Add(new ProPickOreReport("ore-"+oreMap.Key, ppt, totalFactor.ToDensity()));
+                        oreReports.Add(new ProPickOreReport("ore-" + oreMap.Key, ppt, totalFactor.ToDensity()));
                     else if (totalFactor > 0.002)
-                        oreReports.Add(new ProPickOreReport("ore-"+oreMap.Key, ppt, OreDensity.Miniscule));
+                        oreReports.Add(new ProPickOreReport("ore-" + oreMap.Key, ppt, OreDensity.Miniscule));
                 }
             }
 

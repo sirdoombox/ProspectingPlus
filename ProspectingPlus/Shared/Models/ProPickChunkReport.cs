@@ -8,24 +8,24 @@ namespace ProspectingPlus.Shared.Models
     public class ProPickChunkReport
     {
         public IReadOnlyList<ProPickOreReport> OreReports { get; }
-        public IPlayer ReportByPlayer { get; }
+        public string ReportByPlayerUID { get; }
         public int ChunkX { get; }
         public int ChunkZ { get; }
 
-        public ProPickChunkReport(IReadOnlyList<ProPickOreReport> oreReports, 
-            IPlayer reportByPlayer, 
+        public ProPickChunkReport(IReadOnlyList<ProPickOreReport> oreReports,
+            IPlayer reportByPlayer,
             int chunkX,
             int chunkZ)
         {
             OreReports = oreReports;
-            ReportByPlayer = reportByPlayer;
+            ReportByPlayerUID = reportByPlayer.PlayerUID;
             ChunkX = chunkX;
             ChunkZ = chunkZ;
         }
 
         public ProPickChunkReport(ChunkReportPacket packet, ICoreAPI api)
         {
-            ReportByPlayer = api.World.AllOnlinePlayers.First(x => x.PlayerUID == packet.PlayerUID);
+            ReportByPlayerUID = api.World.AllOnlinePlayers.First(x => x.PlayerUID == packet.PlayerUID).PlayerUID;
             ChunkX = packet.ChunkX;
             ChunkZ = packet.ChunkZ;
             OreReports = packet.OreKeys

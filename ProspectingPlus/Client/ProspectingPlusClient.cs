@@ -32,12 +32,12 @@ namespace ProspectingPlus.Client
                 OnOverlayToggled?.Invoke();
                 return true;
             });
-            
+
             _chan = _api.Network.RegisterChannelAndTypes().SetMessageHandler<ChunkReportPacket>(report =>
             {
                 OnChunkReportReceived?.Invoke(new ProPickChunkReport(report, api));
             });
-            
+
             new Harmony("com.prospectingplus.patches").PatchAll(Assembly.GetExecutingAssembly());
             ProspectingPickPatch.OnChunkReportGenerated += report =>
             {

@@ -1,15 +1,16 @@
-﻿using Vintagestory.API.Client;
+﻿using System.Diagnostics;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
 
 namespace VSModLauncher
 {
     /// <summary>
-    /// Redirects all log entries into the visual studio output window. Only for your convenience during development and testing.
+    ///     Redirects all log entries into the visual studio output window. Only for your convenience during development and
+    ///     testing.
     /// </summary>
     public class RedirectLogs : ModSystem
     {
-
         public override bool ShouldLoad(EnumAppSide side)
         {
             return true;
@@ -22,8 +23,8 @@ namespace VSModLauncher
 
         private void OnServerLogEntry(EnumLogType logType, string message, params object[] args)
         {
-            if (logType == EnumLogType.VerboseDebug)  return;
-            System.Diagnostics.Debug.WriteLine("[Server " + logType + "] " + message, args);
+            if (logType == EnumLogType.VerboseDebug) return;
+            Debug.WriteLine("[Server " + logType + "] " + message, args);
         }
 
         public override void StartClientSide(ICoreClientAPI api)
@@ -34,7 +35,7 @@ namespace VSModLauncher
         private void OnClientLogEntry(EnumLogType logType, string message, params object[] args)
         {
             if (logType == EnumLogType.VerboseDebug) return;
-            System.Diagnostics.Debug.WriteLine("[Client " + logType + "] " + message, args);
+            Debug.WriteLine("[Client " + logType + "] " + message, args);
         }
     }
 }

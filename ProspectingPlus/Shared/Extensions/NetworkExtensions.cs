@@ -14,10 +14,14 @@ namespace ProspectingPlus.Shared.Extensions
                 .RegisterMessageType<ChunkReportPacket>();
         }
 
-        public static IServerNetworkChannel RegisterChannelAndTypes(this IServerNetworkAPI api) =>
-            RegisterChannelAndTypes<IServerNetworkAPI, IServerNetworkChannel>(api);
+        public static IServerNetworkChannel RegisterChannelAndTypes(this IServerNetworkAPI api)
+        {
+            return RegisterChannelAndTypes<IServerNetworkAPI, IServerNetworkChannel>(api);
+        }
 
-        public static IClientNetworkChannel RegisterChannelAndTypes(this IClientNetworkAPI api) =>
-            RegisterChannelAndTypes<IClientNetworkAPI, IClientNetworkChannel>(api);
+        public static IClientNetworkChannel RegisterChannelAndTypes(this IClientNetworkAPI api)
+        {
+            return RegisterChannelAndTypes<IClientNetworkAPI, IClientNetworkChannel>(api);
+        }
     }
 }

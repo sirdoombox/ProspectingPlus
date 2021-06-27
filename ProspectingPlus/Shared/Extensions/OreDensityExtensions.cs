@@ -5,7 +5,7 @@ namespace ProspectingPlus.Shared.Extensions
 {
     public static class OreDensityExtensions
     {
-        private static readonly OreDensity[] densities = new[]
+        private static readonly OreDensity[] densities =
         {
             OreDensity.VeryPoor,
             OreDensity.Poor,
@@ -15,10 +15,12 @@ namespace ProspectingPlus.Shared.Extensions
             OreDensity.UltraHigh
         };
 
-        
+
         public static string ToLangKey(this OreDensity oreDensity)
         {
-            return oreDensity is OreDensity.Miniscule ? "Miniscule Amounts Of" : $"propick-density-{oreDensity.ToString().ToLower()}";
+            return oreDensity is OreDensity.Miniscule
+                ? "Miniscule Amounts Of"
+                : $"propick-density-{oreDensity.ToString().ToLower()}";
         }
 
         public static OreDensity ToDensity(this double totalFactor)

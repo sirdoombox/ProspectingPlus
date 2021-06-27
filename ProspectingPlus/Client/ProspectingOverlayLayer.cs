@@ -13,17 +13,18 @@ namespace ProspectingPlus.Client
 {
     public class ProspectingOverlayLayer : MapLayer
     {
-        public override string Title => nameof(ProspectingOverlayLayer);
-        public override EnumMapAppSide DataSide => EnumMapAppSide.Client;
+        private readonly ICoreClientAPI _api;
+        private readonly List<ProPickChunkReport> _chunkReports;
+        private readonly int _chunkSize;
+        private readonly ProspectingPlusClient _client;
+        private readonly List<ProspectingMapComponent> _components = new List<ProspectingMapComponent>();
+        private readonly IWorldMapManager _mapManager;
+        private bool _isOverlayEnabled;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
-        private readonly ProspectingPlusClient _client;
-        private readonly ICoreClientAPI _api;
-        private readonly int _chunkSize;
-        private readonly List<ProPickChunkReport> _chunkReports;
-        private readonly IWorldMapManager _mapManager;
-        private readonly List<ProspectingMapComponent> _components = new List<ProspectingMapComponent>();
-        private bool _isOverlayEnabled;
+
+        public override string Title => nameof(ProspectingOverlayLayer);
+        public override EnumMapAppSide DataSide => EnumMapAppSide.Client;
 
         public ProspectingOverlayLayer(ICoreClientAPI api, IWorldMapManager mapSink) : base(api, mapSink)
         {
@@ -44,8 +45,10 @@ namespace ProspectingPlus.Client
             _components.Add(new ProspectingMapComponent(_api, report, tex));
         }
 
-        private void OnOverlayToggled() =>
+        private void OnOverlayToggled()
+        {
             _isOverlayEnabled = !_isOverlayEnabled;
+        }
 
 
         private void GenerateOverlayTextureMap()

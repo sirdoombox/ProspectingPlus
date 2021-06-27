@@ -12,12 +12,22 @@ namespace ProspectingPlus.Server
         private readonly ICoreServerAPI _api;
         private readonly IServerNetworkChannel _chan;
         private readonly List<ProPickChunkReport> _reports = new List<ProPickChunkReport>();
-        
+
+        // TODO: Support the groups system.
+        // TODO: Implement data storage and retrieval.
+
         public ProspectingPlusServer(ICoreServerAPI api)
         {
             _api = api;
             _chan = _api.Network.RegisterChannelAndTypes()
                 .SetMessageHandler<ChunkReportPacket>(ChunkReportReceived);
+            api.Event.PlayerJoin += OnPlayerJoined;
+        }
+
+        private void OnPlayerJoined(IServerPlayer joinedPlayer)
+        {
+            foreach (var report in _reports)
+                _chan.SendPacket(report, joinedPlayer);
         }
 
         private void ChunkReportReceived(IServerPlayer _, ChunkReportPacket reportPacket)

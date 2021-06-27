@@ -3,6 +3,7 @@
   "modid": "prospectingplus",
   "name": "ProspectingPlus",
   "author": "Doombox",
+  "Contributors": ["Capsup"],
   "description": "A complete overhaul of how prospecting is reported and stored.",
   "version": "1.0.0",
   "dependency": {

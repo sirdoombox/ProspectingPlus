@@ -1,8 +1,8 @@
 using ProspectingPlus.Client;
 using ProspectingPlus.Server;
+using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Server;
-using Vintagestory.API.Client;
 
 namespace ProspectingPlus.ModSystem
 {
@@ -10,8 +10,11 @@ namespace ProspectingPlus.ModSystem
     {
         public ProspectingPlusClient Client { get; private set; }
         public ProspectingPlusServer Server { get; private set; }
-        
-        public override bool ShouldLoad(EnumAppSide forSide) => true;
+
+        public override bool ShouldLoad(EnumAppSide forSide)
+        {
+            return true;
+        }
 
         public override void StartServerSide(ICoreServerAPI api)
         {
