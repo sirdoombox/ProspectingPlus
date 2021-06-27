@@ -31,7 +31,7 @@ namespace ProspectingPlus.Client
 
             var sb = new StringBuilder();
             sb.AppendLine(
-                $"-- Prospecting Report From {api.World.PlayerByUid(_report.ReportByPlayerUID).PlayerName} --");
+                $"-- Prospecting Report From {api.World.PlayerByUid(_report.PlayerUID).PlayerName} --");
             foreach (var oreRep in _report.OreReports.OrderByDescending(x => x.Density).ThenByDescending(x => x.Ppt))
                 sb.AppendLine($"{Lang.Get(oreRep.Density.ToLangKey())} {Lang.Get(oreRep.OreKey)} - {oreRep.Ppt:0.##}‰");
             _hoverText = sb.ToString();

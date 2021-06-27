@@ -16,7 +16,7 @@ namespace ProspectingPlus.Shared.Packets
 
         public ChunkReportPacket(ProPickChunkReport proPickChunkReport)
         {
-            PlayerUID = proPickChunkReport.ReportByPlayerUID;
+            PlayerUID = proPickChunkReport.PlayerUID;
             ChunkX = proPickChunkReport.ChunkX;
             ChunkZ = proPickChunkReport.ChunkZ;
             var len = proPickChunkReport.OreReports.Count;
