@@ -19,7 +19,7 @@ namespace ProspectingPlus.Client
         private readonly ProspectingPlusClient _client;
         private readonly List<ProspectingMapComponent> _components = new List<ProspectingMapComponent>();
         private readonly IWorldMapManager _mapManager;
-        private bool _isOverlayEnabled;
+        private bool _isOverlayEnabled = true;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
 

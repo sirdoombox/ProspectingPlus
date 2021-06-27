@@ -35,7 +35,7 @@ namespace ProspectingPlus.Client
 
             _chan = _api.Network.RegisterChannelAndTypes().SetMessageHandler<ChunkReportPacket>(report =>
             {
-                OnChunkReportReceived?.Invoke(new ProPickChunkReport(report, api));
+                OnChunkReportReceived?.Invoke(new ProPickChunkReport(report));
             });
 
             new Harmony("com.prospectingplus.patches").PatchAll(Assembly.GetExecutingAssembly());

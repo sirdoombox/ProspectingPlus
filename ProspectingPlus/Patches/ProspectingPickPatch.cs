@@ -73,7 +73,7 @@ namespace ProspectingPlus.Patches
             byPlayer.SendMessage(GlobalConstants.InfoLogChatGroup, "Prospecting Complete.", EnumChatType.Notification);
             var chunkSize = api.World.BlockAccessor.ChunkSize;
             OnChunkReportGenerated?.Invoke(
-                new ProPickChunkReport(oreReports, byPlayer, pos.X / chunkSize, pos.Z / chunkSize));
+                new ProPickChunkReport(oreReports, byPlayer.PlayerUID, pos.X / chunkSize, pos.Z / chunkSize, byPlayer.PlayerName));
             return false; // Skip the original method, we have no interest in reporting prospecting in the standard way.
         }
     }

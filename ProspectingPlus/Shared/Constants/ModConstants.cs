@@ -8,6 +8,7 @@ namespace ProspectingPlus.Shared.Constants
     {
         public const string MapLayerName = "ProspectingPlus";
         public const string HotkeyCode = "toggleProspectingOverlay";
+        public const string DataFileName = "prospectingplus.reports.json";
 
         public static readonly IReadOnlyDictionary<OreDensity, Color> DensityColorMap =
             new Dictionary<OreDensity, Color>

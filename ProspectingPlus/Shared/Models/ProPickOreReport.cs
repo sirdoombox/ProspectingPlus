@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using ProspectingPlus.Shared.Enums;
 
 namespace ProspectingPlus.Shared.Models
@@ -8,6 +9,7 @@ namespace ProspectingPlus.Shared.Models
         public string OreKey { get; }
         public double Ppt { get; }
 
+        [JsonConstructor]
         public ProPickOreReport(string oreKey, double ppt, OreDensity density)
         {
             Density = density;
