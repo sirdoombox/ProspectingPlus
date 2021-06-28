@@ -37,8 +37,7 @@ namespace ProspectingPlus.Client
             {
                 OnChunkReportReceived?.Invoke(new ProPickChunkReport(report));
             });
-
-            new Harmony("com.prospectingplus.patches").PatchAll(Assembly.GetExecutingAssembly());
+            
             ProspectingPickPatch.OnChunkReportGenerated += report =>
             {
                 _chan.SendPacket(new ChunkReportPacket(report));

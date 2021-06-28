@@ -1,3 +1,5 @@
+using System.Reflection;
+using HarmonyLib;
 using ProspectingPlus.Client;
 using ProspectingPlus.Server;
 using Vintagestory.API.Client;
@@ -16,6 +18,12 @@ namespace ProspectingPlus.ModSystem
             return true;
         }
 
+        public override void Start(ICoreAPI api)
+        {
+            var harmony = new Harmony("prospectingplus.patches");
+            harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusSystem)));
+        }
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             Server = new ProspectingPlusServer(api);
@@ -26,9 +34,6 @@ namespace ProspectingPlus.ModSystem
             Client = new ProspectingPlusClient(api);
         }
 
-        public override double ExecuteOrder()
-        {
-            return 1000d;
-        }
+        public override double ExecuteOrder() => 10000d;
     }
 }

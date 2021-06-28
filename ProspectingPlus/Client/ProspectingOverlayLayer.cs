@@ -14,11 +14,9 @@ namespace ProspectingPlus.Client
     public class ProspectingOverlayLayer : MapLayer
     {
         private readonly ICoreClientAPI _api;
-        private readonly List<ProPickChunkReport> _chunkReports;
         private readonly int _chunkSize;
         private readonly ProspectingPlusClient _client;
         private readonly List<ProspectingMapComponent> _components = new List<ProspectingMapComponent>();
-        private readonly IWorldMapManager _mapManager;
         private bool _isOverlayEnabled = true;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
@@ -29,9 +27,7 @@ namespace ProspectingPlus.Client
         public ProspectingOverlayLayer(ICoreClientAPI api, IWorldMapManager mapSink) : base(api, mapSink)
         {
             _api = api;
-            _mapManager = mapSink;
             _chunkSize = api.World.BlockAccessor.ChunkSize;
-            _chunkReports = new List<ProPickChunkReport>();
             _client = api.ModLoader.GetModSystem<ProspectingPlusSystem>().Client;
             _client.OnOverlayToggled += OnOverlayToggled;
             _client.OnChunkReportReceived += OnChunkReportReceived;
@@ -40,7 +36,6 @@ namespace ProspectingPlus.Client
 
         private void OnChunkReportReceived(ProPickChunkReport report)
         {
-            _chunkReports.Add(report);
             var tex = _textureMap[report.OreReports.OrderByDescending(x => x.Density).First().Density];
             _components.Add(new ProspectingMapComponent(_api, report, tex));
         }
@@ -49,8 +44,7 @@ namespace ProspectingPlus.Client
         {
             _isOverlayEnabled = !_isOverlayEnabled;
         }
-
-
+        
         private void GenerateOverlayTextureMap()
         {
             _textureMap = new Dictionary<OreDensity, LoadedTexture>();

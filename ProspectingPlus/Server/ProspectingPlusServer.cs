@@ -17,7 +17,6 @@ namespace ProspectingPlus.Server
         private readonly IServerNetworkChannel _chan;
         private readonly List<ProPickChunkReport> _reports = new List<ProPickChunkReport>();
         private readonly string _filePath;
-        private readonly string _dirPath;
 
         // TODO: Support the groups system.
 
@@ -28,15 +27,20 @@ namespace ProspectingPlus.Server
                 .SetMessageHandler<ChunkReportPacket>(ChunkReportReceived);
             api.Event.PlayerNowPlaying += OnPlayerReady;
             api.Event.GameWorldSave += OnGameWorldSave;
-            _dirPath = Path.Combine(GamePaths.DataPath, "ModData");
-            if (!Directory.Exists(_dirPath))
-                Directory.CreateDirectory(_dirPath);
-            _dirPath = Path.Combine(_dirPath, api.World.SavegameIdentifier);
-            if (!Directory.Exists(_dirPath))
-                Directory.CreateDirectory(_dirPath);
-            _filePath = Path.Combine(_dirPath, ModConstants.DataFileName);
+            _filePath = CreateDirs();
             if (File.Exists(_filePath))
                 _reports = JsonConvert.DeserializeObject<List<ProPickChunkReport>>(File.ReadAllText(_filePath));
+        }
+
+        private string CreateDirs()
+        {
+            var dirPath = Path.Combine(GamePaths.DataPath, "ModData");
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+            dirPath = Path.Combine(dirPath, _api.World.SavegameIdentifier);
+            if (!Directory.Exists(dirPath))
+                Directory.CreateDirectory(dirPath);
+            return Path.Combine(dirPath, ModConstants.DataFileName);
         }
 
         private void OnGameWorldSave()
