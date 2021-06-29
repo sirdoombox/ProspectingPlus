@@ -18,12 +18,6 @@ namespace ProspectingPlus.ModSystem
             return true;
         }
 
-        public override void Start(ICoreAPI api)
-        {
-            var harmony = new Harmony("prospectingplus.patches");
-            harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusSystem)));
-        }
-
         public override void StartServerSide(ICoreServerAPI api)
         {
             Server = new ProspectingPlusServer(api);

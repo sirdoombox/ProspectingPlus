@@ -1,7 +1,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using HarmonyLib;
 using Newtonsoft.Json;
+using ProspectingPlus.Client;
+using ProspectingPlus.Patches;
 using ProspectingPlus.Shared.Constants;
 using ProspectingPlus.Shared.Extensions;
 using ProspectingPlus.Shared.Models;
@@ -30,6 +34,16 @@ namespace ProspectingPlus.Server
             _filePath = CreateDirs();
             if (File.Exists(_filePath))
                 _reports = JsonConvert.DeserializeObject<List<ProPickChunkReport>>(File.ReadAllText(_filePath));
+            
+            var harmony = new Harmony("prospectingplus.patches");
+            harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusServer)));
+            ProspectingPickPatch.OnChunkReportGenerated += report =>
+            {
+                if (_reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
+                    return; // discard any reports for existing chunks.
+                _reports.Add(report);
+                _chan.BroadcastPacket(new ChunkReportPacket(report));
+            };
         }
 
         private string CreateDirs()
