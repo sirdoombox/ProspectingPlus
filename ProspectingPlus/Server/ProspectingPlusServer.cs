@@ -12,6 +12,7 @@ using ProspectingPlus.Shared.Models;
 using ProspectingPlus.Shared.Packets;
 using Vintagestory.API.Config;
 using Vintagestory.API.Server;
+using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Server
 {
@@ -27,8 +28,7 @@ namespace ProspectingPlus.Server
         public ProspectingPlusServer(ICoreServerAPI api)
         {
             _api = api;
-            _chan = _api.Network.RegisterChannelAndTypes()
-                .SetMessageHandler<ChunkReportPacket>(ChunkReportReceived);
+            _chan = _api.Network.RegisterChannelAndTypes();
             api.Event.PlayerNowPlaying += OnPlayerReady;
             api.Event.GameWorldSave += OnGameWorldSave;
             _filePath = CreateDirs();
@@ -37,13 +37,7 @@ namespace ProspectingPlus.Server
             
             var harmony = new Harmony("prospectingplus.patches");
             harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusServer)));
-            ProspectingPickPatch.OnChunkReportGenerated += report =>
-            {
-                if (_reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
-                    return; // discard any reports for existing chunks.
-                _reports.Add(report);
-                _chan.BroadcastPacket(new ChunkReportPacket(report));
-            };
+            ProspectingPickPatch.OnChunkReportGenerated += OnChunkReportGenerated;
         }
 
         private string CreateDirs()
@@ -57,6 +51,14 @@ namespace ProspectingPlus.Server
             return Path.Combine(dirPath, ModConstants.DataFileName);
         }
 
+        private void OnChunkReportGenerated(ProPickChunkReport report)
+        {
+            if (_reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
+                return; // discard any reports for existing chunks.
+            _reports.Add(report);
+            _chan.BroadcastPacket(new ChunkReportPacket(report));
+        }
+
         private void OnGameWorldSave()
         {
             File.WriteAllText(_filePath, JsonConvert.SerializeObject(_reports));
@@ -66,15 +68,6 @@ namespace ProspectingPlus.Server
         {
             foreach (var report in _reports)
                 _chan.SendPacket(new ChunkReportPacket(report), joinedPlayer);
-        }
-
-        private void ChunkReportReceived(IServerPlayer _, ChunkReportPacket reportPacket)
-        {
-            var report = new ProPickChunkReport(reportPacket);
-            if (_reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
-                return; // discard any reports for existing chunks.
-            _reports.Add(report);
-            _chan.BroadcastPacket(reportPacket);
         }
     }
 }

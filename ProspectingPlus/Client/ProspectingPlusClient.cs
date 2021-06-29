@@ -37,13 +37,6 @@ namespace ProspectingPlus.Client
             {
                 OnChunkReportReceived?.Invoke(new ProPickChunkReport(report));
             });
-            
-            // TODO: Get this patch to apply, it might be that it needs to be applied on the server side.
-            
-            // ProspectingPickPatch.OnChunkReportGenerated += report =>
-            // {
-            //     _chan.SendPacket(new ChunkReportPacket(report));
-            // };
         }
     }
 }
