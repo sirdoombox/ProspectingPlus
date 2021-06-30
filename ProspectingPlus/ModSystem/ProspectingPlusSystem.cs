@@ -1,5 +1,3 @@
-using System.Reflection;
-using HarmonyLib;
 using ProspectingPlus.Client;
 using ProspectingPlus.Server;
 using Vintagestory.API.Client;
@@ -28,6 +26,9 @@ namespace ProspectingPlus.ModSystem
             Client = new ProspectingPlusClient(api);
         }
 
-        public override double ExecuteOrder() => 10000d;
+        public override double ExecuteOrder()
+        {
+            return 10000d;
+        }
     }
 }

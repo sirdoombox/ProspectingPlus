@@ -20,6 +20,7 @@ namespace ProspectingPlus.Client
         private bool _isOverlayEnabled = true;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
+        private List<string> _oreFilter = new List<string>();
 
         public override string Title => nameof(ProspectingOverlayLayer);
         public override EnumMapAppSide DataSide => EnumMapAppSide.Client;
@@ -44,7 +45,7 @@ namespace ProspectingPlus.Client
         {
             _isOverlayEnabled = !_isOverlayEnabled;
         }
-        
+
         private void GenerateOverlayTextureMap()
         {
             _textureMap = new Dictionary<OreDensity, LoadedTexture>();
@@ -61,15 +62,21 @@ namespace ProspectingPlus.Client
         public override void OnMouseMoveClient(MouseEvent args, GuiElementMap mapElem, StringBuilder hoverText)
         {
             if (!_isOverlayEnabled) return;
-            foreach (var comp in _components)
+            foreach (var comp in _components.Where(comp =>
+                comp.Report.OreReports.Any(x => _oreFilter.Any(y => x.OreKey == y))))
                 comp.OnMouseMove(args, mapElem, hoverText);
         }
 
         public override void Render(GuiElementMap mapElem, float dt)
         {
             if (!_isOverlayEnabled) return;
-            foreach (var comp in _components)
-                comp.Render(mapElem, dt);
+            foreach (var comp in _components.Where(comp =>
+                comp.Report.OreReports.Any(x => _oreFilter.Any(y => x.OreKey == y)))) comp.Render(mapElem, dt);
+        }
+
+        public void FilterUpdated(List<string> keysToDisplay)
+        {
+            _oreFilter = keysToDisplay;
         }
 
         public override void Dispose()

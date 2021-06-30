@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using ProspectingPlus.Shared.Packets;
-using Vintagestory.API.Common;
 
 namespace ProspectingPlus.Shared.Models
 {
@@ -25,7 +24,8 @@ namespace ProspectingPlus.Shared.Models
         }
 
         [JsonConstructor]
-        public ProPickChunkReport(List<ProPickOreReport> oreReports, string playerUID, int chunkX, int chunkZ, string playerName)
+        public ProPickChunkReport(List<ProPickOreReport> oreReports, string playerUID, int chunkX, int chunkZ,
+            string playerName)
         {
             OreReports = oreReports;
             PlayerUID = playerUID;

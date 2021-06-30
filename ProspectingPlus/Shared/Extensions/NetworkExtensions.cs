@@ -11,7 +11,8 @@ namespace ProspectingPlus.Shared.Extensions
             where T : INetworkAPI where TResult : INetworkChannel
         {
             return (TResult) api.RegisterChannel(nameof(ProspectingPlus))
-                .RegisterMessageType<ChunkReportPacket>();
+                .RegisterMessageType<ChunkReportPacket>()
+                .RegisterMessageType<OreList>();
         }
 
         public static IServerNetworkChannel RegisterChannelAndTypes(this IServerNetworkAPI api)

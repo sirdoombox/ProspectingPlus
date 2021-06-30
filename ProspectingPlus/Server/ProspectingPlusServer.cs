@@ -4,7 +4,6 @@ using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using Newtonsoft.Json;
-using ProspectingPlus.Client;
 using ProspectingPlus.Patches;
 using ProspectingPlus.Shared.Constants;
 using ProspectingPlus.Shared.Extensions;
@@ -12,7 +11,7 @@ using ProspectingPlus.Shared.Models;
 using ProspectingPlus.Shared.Packets;
 using Vintagestory.API.Config;
 using Vintagestory.API.Server;
-using Vintagestory.GameContent;
+using Vintagestory.ServerMods;
 
 namespace ProspectingPlus.Server
 {
@@ -21,6 +20,7 @@ namespace ProspectingPlus.Server
         private readonly ICoreServerAPI _api;
         private readonly IServerNetworkChannel _chan;
         private readonly List<ProPickChunkReport> _reports = new List<ProPickChunkReport>();
+        private readonly OreList _oreList;
         private readonly string _filePath;
 
         // TODO: Support the groups system.
@@ -28,13 +28,19 @@ namespace ProspectingPlus.Server
         public ProspectingPlusServer(ICoreServerAPI api)
         {
             _api = api;
+            var assets = _api.Assets.GetMany<DepositVariant[]>(_api.World.Logger, "worldgen/deposits/");
+            _oreList = new OreList(assets.SelectMany(x => x.Value)
+                .Select(x => $"ore-{x.Code}")
+                .Distinct()
+                .Where(x => x != Lang.Get(x))
+                .ToList());
             _chan = _api.Network.RegisterChannelAndTypes();
             api.Event.PlayerNowPlaying += OnPlayerReady;
             api.Event.GameWorldSave += OnGameWorldSave;
             _filePath = CreateDirs();
             if (File.Exists(_filePath))
                 _reports = JsonConvert.DeserializeObject<List<ProPickChunkReport>>(File.ReadAllText(_filePath));
-            
+
             var harmony = new Harmony("prospectingplus.patches");
             harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusServer)));
             ProspectingPickPatch.OnChunkReportGenerated += OnChunkReportGenerated;
@@ -66,6 +72,7 @@ namespace ProspectingPlus.Server
 
         private void OnPlayerReady(IServerPlayer joinedPlayer)
         {
+            _chan.SendPacket(_oreList, joinedPlayer);
             foreach (var report in _reports)
                 _chan.SendPacket(new ChunkReportPacket(report), joinedPlayer);
         }

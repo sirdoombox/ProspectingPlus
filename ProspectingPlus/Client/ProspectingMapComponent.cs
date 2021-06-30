@@ -13,11 +13,12 @@ namespace ProspectingPlus.Client
     {
         private readonly int _chunkSize;
         private readonly string _hoverText;
-        private readonly ProPickChunkReport _report;
         private readonly LoadedTexture _texture;
 
         private readonly Vec3d _worldPos;
         private Vec2f _viewPos = new Vec2f();
+
+        public ProPickChunkReport Report { get; }
 
         public ProspectingMapComponent(
             ICoreClientAPI api,
@@ -25,14 +26,14 @@ namespace ProspectingPlus.Client
             LoadedTexture loadedTexture) : base(api)
         {
             _texture = loadedTexture;
-            _report = chunkReport;
+            Report = chunkReport;
             _chunkSize = api.World.BlockAccessor.ChunkSize;
-            _worldPos = new Vec3d(_report.ChunkX * _chunkSize, 0, _report.ChunkZ * _chunkSize);
+            _worldPos = new Vec3d(Report.ChunkX * _chunkSize, 0, Report.ChunkZ * _chunkSize);
 
             var sb = new StringBuilder();
             sb.AppendLine(
-                $"-- Prospecting Report From {_report.PlayerName} --");
-            foreach (var oreRep in _report.OreReports.OrderByDescending(x => x.Density).ThenByDescending(x => x.Ppt))
+                $"-- Prospecting Report From {Report.PlayerName} --");
+            foreach (var oreRep in Report.OreReports.OrderByDescending(x => x.Density).ThenByDescending(x => x.Ppt))
                 sb.AppendLine($"{Lang.Get(oreRep.Density.ToLangKey())} {Lang.Get(oreRep.OreKey)} - {oreRep.Ppt:0.##}‰");
             _hoverText = sb.ToString();
         }
@@ -47,7 +48,7 @@ namespace ProspectingPlus.Client
 
             var chunkX = (int) (worldPos.X / _chunkSize);
             var chunkZ = (int) (worldPos.Z / _chunkSize);
-            if (chunkX == _report.ChunkX && chunkZ == _report.ChunkZ)
+            if (chunkX == Report.ChunkX && chunkZ == Report.ChunkZ)
                 hoverText.AppendLine($"\n{_hoverText}");
         }
 
