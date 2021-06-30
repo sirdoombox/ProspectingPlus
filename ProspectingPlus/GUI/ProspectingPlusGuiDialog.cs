@@ -23,6 +23,9 @@ namespace ProspectingPlus.GUI
         private readonly ProspectingOverlayLayer _overlayLayer;
 
         public override string ToggleKeyCombinationCode { get; }
+        
+        // TODO: Save filter settings
+        // TODO: Implement density filter
 
 
         public ProspectingPlusGuiDialog(ICoreClientAPI capi) : base(capi)
@@ -87,13 +90,17 @@ namespace ProspectingPlus.GUI
                 (code, selected) => { UpdateMapFilter(); },
                 buttonBounds,
                 "oreList");
+            var elem = SingleComposer.GetDropDown("oreList");
             SingleComposer = composer.EndChildElements().Compose();
+            var switches = (GuiElementSwitch[]) _switchesField?.GetValue(elem.listMenu);
+            foreach (var switchElem in switches)
+                switchElem.On = true;
         }
 
         public override bool TryOpen()
         {
-            //if (!_isSetup)
-            SetupDialog();
+            if (!_isSetup)
+                SetupDialog();
             return base.TryOpen();
         }
 
