@@ -18,9 +18,19 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <VINTAGE_STORY>G:\VintagestoryModding\</VINTAGE_STORY>
-  </PropertyGroup>
+  <!-- Paths for game and save data. found in `SolutionRoot/paths.csproj` -->
+  <!-- If you're having errors, it's probably because you didn't create this file. -->
+  <!-- The file should look like this... -->
+  <!--
+  <?xml version="1.0" encoding="utf-8"?>
+  <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+      <PropertyGroup>
+          <VINTAGE_STORY>C:\PathTo\YourGame\Install\Vintagestory</VINTAGE_STORY>
+          <VINTAGE_STORY_DATA>C:\PathTo\YourGame\SaveData\VintagestoryData</VINTAGE_STORY_DATA>
+      </PropertyGroup>
+  </Project> 
+  -->
+  <Import Project="..\paths.csproj"/>
 
   <PropertyGroup Label="VSModTemplate Debug Properties" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>

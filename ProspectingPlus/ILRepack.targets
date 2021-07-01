@@ -9,6 +9,7 @@
     <ItemGroup>
       <LibraryPath Include="$(OutputPath)" />
       <LibraryPath Include="$(VINTAGE_STORY)/Lib/" />
+      <LibraryPath Include="$(VINTAGE_STORY)/" />
     </ItemGroup>
     <ItemGroup>
       <DoNotInternalizeAssemblies Include="VintagestoryAPI.dll" />

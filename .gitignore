@@ -364,3 +364,5 @@ MigrationBackup/
 *.zip
 
 .idea/
+
+/paths.csproj
