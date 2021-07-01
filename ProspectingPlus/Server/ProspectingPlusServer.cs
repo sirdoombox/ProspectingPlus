@@ -19,7 +19,7 @@ namespace ProspectingPlus.Server
         private readonly ProspectingPlusServerState _serverState;
         private readonly OreList _oreList;
 
-        // TODO: Support the groups system.
+        // TODO: Support the groups system. - Long term goal, short term it seems unreasonable.
 
         public ProspectingPlusServer(ICoreServerAPI api)
         {
@@ -58,7 +58,7 @@ namespace ProspectingPlus.Server
         {
             _chan.SendPacket(_oreList, joinedPlayer);
             foreach (var report in _serverState.Reports)
-                _chan.SendPacket(new ChunkReportPacket(report), joinedPlayer);
+                _chan.SendPacket(new ChunkReportPacket(report, true), joinedPlayer);
         }
     }
 }

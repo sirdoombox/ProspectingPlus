@@ -9,15 +9,17 @@ namespace ProspectingPlus.Shared.Models
 
         public List<string> EnabledOreKeys { get; set; }
         public bool OverlayEnabled { get; set; }
-        public bool TextPrintoutEnabled { get; set; }
+        public bool TextReportsEnabled { get; set; }
         public OreDensity SelectedMinimumDensity { get; set; }
+        public int OverlayOpacityPercent { get; set; }
 
         public override void Default()
         {
-            EnabledOreKeys = new List<string>();
+            EnabledOreKeys = null;
             OverlayEnabled = true;
-            TextPrintoutEnabled = false;
+            TextReportsEnabled = false;
             SelectedMinimumDensity = OreDensity.Miniscule;
+            OverlayOpacityPercent = 45;
         }
     }
 }

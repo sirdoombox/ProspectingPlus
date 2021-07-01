@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using ProspectingPlus.ModSystem;
@@ -7,6 +8,7 @@ using ProspectingPlus.Shared.Enums;
 using ProspectingPlus.Shared.Extensions;
 using ProspectingPlus.Shared.Models;
 using Vintagestory.API.Client;
+using Vintagestory.Client.NoObf;
 using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Client
@@ -61,6 +63,20 @@ namespace ProspectingPlus.Client
                 _api.Render.LoadOrUpdateTextureFromRgba(arr, false, 0, ref tex);
                 _api.Render.BindTexture2d(tex.TextureId);
                 _textureMap.Add(mappedColor.Key, tex);
+            }
+            ModifyAlpha(_client.ClientState.OverlayOpacityPercent);
+        }
+
+        public void ModifyAlpha(int valPercent)
+        {
+            var alpha = (int)(255 * (valPercent / 100f));
+            foreach (var mappedTex in _textureMap)
+            {
+                var tex = mappedTex.Value;
+                var color = ModConstants.DensityColorMap[mappedTex.Key];
+                var alphaAdjusted = Color.FromArgb(alpha, color);
+                var arr = Enumerable.Repeat(alphaAdjusted.ToVsArgb(), _chunkSize * _chunkSize).ToArray();
+                _api.Render.LoadOrUpdateTextureFromRgba(arr, false, 0, ref tex);
             }
         }
 

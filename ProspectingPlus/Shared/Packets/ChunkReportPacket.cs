@@ -14,8 +14,9 @@ namespace ProspectingPlus.Shared.Packets
         [ProtoMember(5)] public double[] Ppts;
         [ProtoMember(6)] public OreDensity[] Densities;
         [ProtoMember(7)] public string PlayerName;
+        [ProtoMember(8)] public bool IsInitPacket;
 
-        public ChunkReportPacket(ProPickChunkReport proPickChunkReport)
+        public ChunkReportPacket(ProPickChunkReport proPickChunkReport, bool isInitPacket = false)
         {
             PlayerUID = proPickChunkReport.PlayerUID;
             ChunkX = proPickChunkReport.ChunkX;
@@ -32,6 +33,8 @@ namespace ProspectingPlus.Shared.Packets
                 Ppts[i] = oreRep.Ppt;
                 Densities[i] = oreRep.Density;
             }
+
+            IsInitPacket = isInitPacket;
         }
 
         public ChunkReportPacket()

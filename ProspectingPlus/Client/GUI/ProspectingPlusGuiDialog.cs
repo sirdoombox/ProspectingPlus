@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,10 +24,9 @@ namespace ProspectingPlus.Client.GUI
         private readonly ProspectingPlusClient _client;
 
         private bool _isSetup;
-
         private List<string> _oreList;
 
-        public override string ToggleKeyCombinationCode => "worldmapdialog";
+        public override string ToggleKeyCombinationCode => null;
 
         // TODO: Implement toggling regular chat printout for the propick.
         // TODO: Implement alpha slider for the overlay.
@@ -44,10 +44,13 @@ namespace ProspectingPlus.Client.GUI
         {
             _isSetup = true;
 
+            var font = CairoFont.WhiteSmallText();
+
             var dialogBounds = ElementStdBounds.AutosizedMainDialog.WithAlignment(EnumDialogArea.RightTop)
                 .WithFixedAlignmentOffset(-GuiStyle.DialogToScreenPadding, GuiStyle.DialogToScreenPadding);
 
-            var buttonBounds = ElementBounds.Fixed(0, 0, 350, 25);
+            var textBounds = ElementBounds.Fixed(0, 1, 175, 25);
+            var switchBounds = ElementBounds.Fixed(180, 0, 20, 25);
 
             var bgBounds = ElementBounds.Fill.WithFixedPadding(GuiStyle.ElementToDialogPadding);
             bgBounds.BothSizing = ElementSizing.FitToChildren;
@@ -55,7 +58,28 @@ namespace ProspectingPlus.Client.GUI
             var composer = capi.Gui.CreateCompo("prospectingPlusConfigGui", dialogBounds)
                 .AddShadedDialogBG(bgBounds, false)
                 .BeginChildElements(bgBounds);
-            // toggle text output
+            composer.AddStaticText("Enable Chat Reports?", font, textBounds);
+            composer.AddSwitch(
+                value => { _client.ClientState.TextReportsEnabled = value; }, 
+                switchBounds, 
+                "enableChatReports", 
+                25);
+            textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
+            switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
+            composer.AddStaticText(
+                "Overlay Opacity (%)", 
+                font, 
+                textBounds);
+            composer.AddSlider(
+                value =>
+                {
+                    _client.ClientState.OverlayOpacityPercent = value;
+                    _overlayLayer.ModifyAlpha(value);
+                    return true;
+                },
+                switchBounds.FlatCopy().WithFixedWidth(170),
+                "opacitySlider");
+            var buttonBounds = textBounds.BelowCopy(fixedDeltaY: 10).WithFixedWidth(350);
             composer.AddSmallButton("Toggle All", () => ToggleAllOres(true), buttonBounds);
             buttonBounds = buttonBounds.BelowCopy(fixedDeltaY: 5);
             composer.AddSmallButton("Toggle None", () => ToggleAllOres(false), buttonBounds);
@@ -77,6 +101,10 @@ namespace ProspectingPlus.Client.GUI
                 buttonBounds,
                 "densityList");
             SingleComposer = composer.EndChildElements().Compose();
+            SingleComposer.GetSwitch("enableChatReports")
+                .SetValue(_client.ClientState.TextReportsEnabled);
+            SingleComposer.GetSlider("opacitySlider")
+                .SetValues(_client.ClientState.OverlayOpacityPercent, 0, 100, 1, "%");
             ToggleSavedOres();
         }
 
@@ -101,6 +129,11 @@ namespace ProspectingPlus.Client.GUI
 
         private void ToggleSavedOres()
         {
+            if (_client.ClientState.EnabledOreKeys is null)
+            {
+                ToggleAllOres(true);
+                return;
+            }
             var elem = SingleComposer.GetDropDown("oreList");
             elem.listMenu.SelectedIndices = new int[_client.ClientState.EnabledOreKeys.Count];
             var switches = (GuiElementSwitch[]) _switchesField?.GetValue(elem.listMenu);
