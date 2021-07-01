@@ -11,7 +11,7 @@ namespace ProspectingPlus.Shared.Models
         public bool OverlayEnabled { get; set; }
         public bool TextPrintoutEnabled { get; set; }
         public OreDensity SelectedMinimumDensity { get; set; }
-        
+
         public override void Default()
         {
             EnabledOreKeys = new List<string>();

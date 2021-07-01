@@ -19,15 +19,17 @@ namespace ProspectingPlus.Client.GUI
         private static readonly FieldInfo _switchesField =
             typeof(GuiElementListMenu).GetField("switches", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        private readonly ProspectingOverlayLayer _overlayLayer;
+        private readonly ProspectingPlusClient _client;
+
         private bool _isSetup;
 
         private List<string> _oreList;
-        private readonly ProspectingOverlayLayer _overlayLayer;
-        private readonly ProspectingPlusClient _client;
 
         public override string ToggleKeyCombinationCode => "worldmapdialog";
 
         // TODO: Implement toggling regular chat printout for the propick.
+        // TODO: Implement alpha slider for the overlay.
 
         public ProspectingPlusGuiDialog(ICoreClientAPI capi) : base(capi)
         {
@@ -68,10 +70,10 @@ namespace ProspectingPlus.Client.GUI
             buttonBounds = buttonBounds.BelowCopy(fixedDeltaY: 10);
             var densityDict = OreDensityExtensions.GetOreDensityStrings();
             composer.AddDropDown(
-                densityDict.Select(x => x.Key).ToArray(), 
+                densityDict.Select(x => x.Key).ToArray(),
                 densityDict.Select(x => x.Value).ToArray(),
-                densityDict.Select(x => x.Key).ToArray().IndexOf(_client.ClientState.SelectedMinimumDensity.ToString()), 
-                (code, selected) => UpdateMapFilter(), 
+                densityDict.Select(x => x.Key).ToArray().IndexOf(_client.ClientState.SelectedMinimumDensity.ToString()),
+                (code, selected) => UpdateMapFilter(),
                 buttonBounds,
                 "densityList");
             SingleComposer = composer.EndChildElements().Compose();
@@ -109,6 +111,7 @@ namespace ProspectingPlus.Client.GUI
                     elem.listMenu.Values.IndexOf(x => x == _client.ClientState.EnabledOreKeys[index]);
                 switches[i].On = true;
             }
+
             _composeDropDown?.Invoke(elem, null);
         }
 

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using ProspectingPlus.Shared.Packets;
-using Vintagestory.API.Common;
 
 namespace ProspectingPlus.Shared.Models
 {

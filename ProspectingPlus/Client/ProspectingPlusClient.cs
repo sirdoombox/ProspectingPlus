@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using ProspectingPlus.Client.GUI;
 using ProspectingPlus.Shared.Constants;
 using ProspectingPlus.Shared.Extensions;
@@ -7,7 +6,6 @@ using ProspectingPlus.Shared.Models;
 using ProspectingPlus.Shared.Packets;
 using ProspectingPlus.Shared.Utils;
 using Vintagestory.API.Client;
-using Vintagestory.API.Config;
 using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Client
@@ -15,9 +13,9 @@ namespace ProspectingPlus.Client
     public class ProspectingPlusClient
     {
         private readonly ICoreClientAPI _api;
-        public ProspectingPlusClientState ClientState { get; private set; }
 
         private ProspectingPlusGuiDialog _dialog;
+        public ProspectingPlusClientState ClientState { get; }
 
         public Action OnOverlayToggled { get; set; }
         public Action<ProPickChunkReport> OnChunkReportReceived { get; set; }
@@ -31,7 +29,7 @@ namespace ProspectingPlus.Client
             ClientState = ModDataUtil.GetOrCreateDefault<ProspectingPlusClientState>(_api.World.SavegameIdentifier);
 
             _api.Event.LeftWorld += () => ClientState.WriteToDisk(_api.World.SavegameIdentifier);
-            
+
             _api.Event.BlockTexturesLoaded += () =>
             {
                 _api.Input.SetHotKeyHandler("worldmapdialog", _ =>

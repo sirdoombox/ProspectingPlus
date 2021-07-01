@@ -32,7 +32,7 @@ namespace ProspectingPlus.Shared.Extensions
             return Densities[(int) GameMath.Clamp(totalFactor * 7.5, 0.0, 5.0)];
         }
 
-        public static Dictionary<string,string> GetOreDensityStrings()
+        public static Dictionary<string, string> GetOreDensityStrings()
         {
             var list = Densities.ToList();
             list.Insert(0, OreDensity.Miniscule);
@@ -41,7 +41,7 @@ namespace ProspectingPlus.Shared.Extensions
 
         public static OreDensity ToDensityEnum(this string densityString)
         {
-            return (OreDensity)Enum.Parse(typeof(OreDensity), densityString);
+            return (OreDensity) Enum.Parse(typeof(OreDensity), densityString);
         }
     }
 }

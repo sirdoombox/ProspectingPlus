@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using ProspectingPlus.ModSystem;
@@ -21,7 +20,7 @@ namespace ProspectingPlus.Client
         private bool _isOverlayEnabled = true;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
-        
+
         private List<string> _oreFilter = new List<string>();
         private OreDensity _densityMinimum;
 
@@ -75,7 +74,7 @@ namespace ProspectingPlus.Client
         public override void Render(GuiElementMap mapElem, float dt)
         {
             if (!_isOverlayEnabled) return;
-            foreach (var comp in FilteredComponents()) 
+            foreach (var comp in FilteredComponents())
                 comp.Render(mapElem, dt);
         }
 
