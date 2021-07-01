@@ -9,6 +9,7 @@ using ProspectingPlus.Shared.Constants;
 using ProspectingPlus.Shared.Extensions;
 using ProspectingPlus.Shared.Models;
 using ProspectingPlus.Shared.Packets;
+using ProspectingPlus.Shared.Utils;
 using Vintagestory.API.Config;
 using Vintagestory.API.Server;
 using Vintagestory.ServerMods;
@@ -19,7 +20,7 @@ namespace ProspectingPlus.Server
     {
         private readonly ICoreServerAPI _api;
         private readonly IServerNetworkChannel _chan;
-        private readonly List<ProPickChunkReport> _reports = new List<ProPickChunkReport>();
+        private readonly ProspectingPlusServerState _serverState;
         private readonly OreList _oreList;
         private readonly string _filePath;
 
@@ -37,43 +38,31 @@ namespace ProspectingPlus.Server
             _chan = _api.Network.RegisterChannelAndTypes();
             api.Event.PlayerNowPlaying += OnPlayerReady;
             api.Event.GameWorldSave += OnGameWorldSave;
-            _filePath = CreateDirs();
-            if (File.Exists(_filePath))
-                _reports = JsonConvert.DeserializeObject<List<ProPickChunkReport>>(File.ReadAllText(_filePath));
+
+            _serverState = ModDataUtil.GetOrCreateDefault<ProspectingPlusServerState>(_api.World.SavegameIdentifier);
 
             var harmony = new Harmony("prospectingplus.patches");
             harmony.PatchAll(Assembly.GetAssembly(typeof(ProspectingPlusServer)));
             ProspectingPickPatch.OnChunkReportGenerated += OnChunkReportGenerated;
         }
 
-        private string CreateDirs()
-        {
-            var dirPath = Path.Combine(GamePaths.DataPath, "ModData");
-            if (!Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
-            dirPath = Path.Combine(dirPath, _api.World.SavegameIdentifier);
-            if (!Directory.Exists(dirPath))
-                Directory.CreateDirectory(dirPath);
-            return Path.Combine(dirPath, ModConstants.DataFileName);
-        }
-
         private void OnChunkReportGenerated(ProPickChunkReport report)
         {
-            if (_reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
+            if (_serverState.Reports.Any(x => x.ChunkX == report.ChunkX && x.ChunkZ == report.ChunkZ))
                 return; // discard any reports for existing chunks.
-            _reports.Add(report);
+            _serverState.Reports.Add(report);
             _chan.BroadcastPacket(new ChunkReportPacket(report));
         }
 
         private void OnGameWorldSave()
         {
-            File.WriteAllText(_filePath, JsonConvert.SerializeObject(_reports));
+            _serverState.WriteToDisk(_api.World.SavegameIdentifier);
         }
 
         private void OnPlayerReady(IServerPlayer joinedPlayer)
         {
             _chan.SendPacket(_oreList, joinedPlayer);
-            foreach (var report in _reports)
+            foreach (var report in _serverState.Reports)
                 _chan.SendPacket(new ChunkReportPacket(report), joinedPlayer);
         }
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using ProspectingPlus.ModSystem;
@@ -20,7 +21,9 @@ namespace ProspectingPlus.Client
         private bool _isOverlayEnabled = true;
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
+        
         private List<string> _oreFilter = new List<string>();
+        private OreDensity _densityMinimum;
 
         public override string Title => nameof(ProspectingOverlayLayer);
         public override EnumMapAppSide DataSide => EnumMapAppSide.Client;
@@ -32,6 +35,8 @@ namespace ProspectingPlus.Client
             _client = api.ModLoader.GetModSystem<ProspectingPlusSystem>().Client;
             _client.OnOverlayToggled += OnOverlayToggled;
             _client.OnChunkReportReceived += OnChunkReportReceived;
+            _oreFilter = _client.ClientState.EnabledOreKeys;
+            _densityMinimum = _client.ClientState.SelectedMinimumDensity;
             GenerateOverlayTextureMap();
         }
 
@@ -44,6 +49,7 @@ namespace ProspectingPlus.Client
         private void OnOverlayToggled()
         {
             _isOverlayEnabled = !_isOverlayEnabled;
+            _client.ClientState.OverlayEnabled = _isOverlayEnabled;
         }
 
         private void GenerateOverlayTextureMap()
@@ -62,21 +68,31 @@ namespace ProspectingPlus.Client
         public override void OnMouseMoveClient(MouseEvent args, GuiElementMap mapElem, StringBuilder hoverText)
         {
             if (!_isOverlayEnabled) return;
-            foreach (var comp in _components.Where(comp =>
-                comp.Report.OreReports.Any(x => _oreFilter.Any(y => x.OreKey == y))))
+            foreach (var comp in FilteredComponents())
                 comp.OnMouseMove(args, mapElem, hoverText);
         }
 
         public override void Render(GuiElementMap mapElem, float dt)
         {
             if (!_isOverlayEnabled) return;
-            foreach (var comp in _components.Where(comp =>
-                comp.Report.OreReports.Any(x => _oreFilter.Any(y => x.OreKey == y)))) comp.Render(mapElem, dt);
+            foreach (var comp in FilteredComponents()) 
+                comp.Render(mapElem, dt);
         }
 
-        public void FilterUpdated(List<string> keysToDisplay)
+        private IEnumerable<ProspectingMapComponent> FilteredComponents()
         {
+            return _components
+                .Where(comp =>
+                    comp.Report.OreReports.Any(x =>
+                        _oreFilter.Any(y => x.OreKey == y) && x.Density >= _densityMinimum));
+        }
+
+        public void FilterUpdated(List<string> keysToDisplay, OreDensity densityMinimum)
+        {
+            _client.ClientState.EnabledOreKeys = keysToDisplay;
+            _client.ClientState.SelectedMinimumDensity = densityMinimum;
             _oreFilter = keysToDisplay;
+            _densityMinimum = densityMinimum;
         }
 
         public override void Dispose()

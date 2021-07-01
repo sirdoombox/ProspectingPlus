@@ -1,10 +1,13 @@
 using System;
-using ProspectingPlus.GUI;
+using System.IO;
+using ProspectingPlus.Client.GUI;
 using ProspectingPlus.Shared.Constants;
 using ProspectingPlus.Shared.Extensions;
 using ProspectingPlus.Shared.Models;
 using ProspectingPlus.Shared.Packets;
+using ProspectingPlus.Shared.Utils;
 using Vintagestory.API.Client;
+using Vintagestory.API.Config;
 using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Client
@@ -12,8 +15,7 @@ namespace ProspectingPlus.Client
     public class ProspectingPlusClient
     {
         private readonly ICoreClientAPI _api;
-        private readonly IClientNetworkChannel _chan;
-        private readonly WorldMapManager _wmm;
+        public ProspectingPlusClientState ClientState { get; private set; }
 
         private ProspectingPlusGuiDialog _dialog;
 
@@ -26,15 +28,17 @@ namespace ProspectingPlus.Client
             var mapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
             mapManager.RegisterMapLayer<ProspectingOverlayLayer>(ModConstants.MapLayerName);
 
-            _wmm = api.ModLoader.GetModSystem<WorldMapManager>();
+            ClientState = ModDataUtil.GetOrCreateDefault<ProspectingPlusClientState>(_api.World.SavegameIdentifier);
 
+            _api.Event.LeftWorld += () => ClientState.WriteToDisk(_api.World.SavegameIdentifier);
+            
             _api.Event.BlockTexturesLoaded += () =>
             {
                 _api.Input.SetHotKeyHandler("worldmapdialog", _ =>
                 {
-                    _wmm.ToggleMap(EnumDialogType.Dialog);
+                    mapManager.ToggleMap(EnumDialogType.Dialog);
                     ShowDialog();
-                    _wmm.worldMapDlg.Focus();
+                    mapManager.worldMapDlg.Focus();
                     return true;
                 });
             };
@@ -46,7 +50,7 @@ namespace ProspectingPlus.Client
                 return true;
             });
 
-            _chan = _api.Network.RegisterChannelAndTypes()
+            _api.Network.RegisterChannelAndTypes()
                 .SetMessageHandler<ChunkReportPacket>(report =>
                 {
                     OnChunkReportReceived?.Invoke(new ProPickChunkReport(report));
@@ -58,18 +62,17 @@ namespace ProspectingPlus.Client
                 });
         }
 
-        private bool ShowDialog()
+        private void ShowDialog()
         {
             _dialog ??= new ProspectingPlusGuiDialog(_api);
 
             if (_dialog != null && _dialog.IsOpened())
             {
                 _dialog.TryClose();
-                return true;
+                return;
             }
 
             _dialog.TryOpen();
-            return true;
         }
     }
 }
