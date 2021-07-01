@@ -19,7 +19,6 @@ namespace ProspectingPlus.Shared.Extensions
             OreDensity.UltraHigh
         };
 
-
         public static string ToLangKey(this OreDensity oreDensity, bool sentenceLike = true)
         {
             return oreDensity is OreDensity.Miniscule

@@ -17,8 +17,8 @@ namespace ProspectingPlus.Client
         private readonly ICoreClientAPI _api;
 
         private ProspectingPlusGuiDialog _dialog;
+        
         public ProspectingPlusClientState ClientState { get; }
-
         public Action OnOverlayToggled { get; set; }
         public Action<ProPickChunkReport> OnChunkReportReceived { get; set; }
 
@@ -55,11 +55,10 @@ namespace ProspectingPlus.Client
                 {
                     var reconstructed = new ProPickChunkReport(report);
                     OnChunkReportReceived?.Invoke(reconstructed);
-                    if(ClientState.TextReportsEnabled 
-                       && reconstructed.PlayerUID == _api.World.Player.PlayerUID
-                       && !report.IsInitPacket)
+                    if (ClientState.TextReportsEnabled
+                        && reconstructed.PlayerUID == _api.World.Player.PlayerUID
+                        && !report.IsInitPacket)
                         PrintTextReport(reconstructed);
-                        
                 })
                 .SetMessageHandler<OreList>(oreList =>
                 {
@@ -84,9 +83,8 @@ namespace ProspectingPlus.Client
         private void PrintTextReport(ProPickChunkReport report)
         {
             foreach (var oreRep in report.OreReports.OrderByDescending(x => x.Density).ThenByDescending(x => x.Ppt))
-            {
-                _api.ShowChatMessage($"{Lang.Get(oreRep.Density.ToLangKey())} {Lang.Get(oreRep.OreKey)} - {oreRep.Ppt:0.##}‰");
-            }
+                _api.ShowChatMessage(
+                    $"{Lang.Get(oreRep.Density.ToLangKey())} {Lang.Get(oreRep.OreKey)} - {oreRep.Ppt:0.##}‰");
             _api.ShowChatMessage("");
         }
     }

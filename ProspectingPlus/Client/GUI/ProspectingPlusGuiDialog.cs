@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -60,15 +59,15 @@ namespace ProspectingPlus.Client.GUI
                 .BeginChildElements(bgBounds);
             composer.AddStaticText("Enable Chat Reports?", font, textBounds);
             composer.AddSwitch(
-                value => { _client.ClientState.TextReportsEnabled = value; }, 
-                switchBounds, 
-                "enableChatReports", 
+                value => { _client.ClientState.TextReportsEnabled = value; },
+                switchBounds,
+                "enableChatReports",
                 25);
             textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
             switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
             composer.AddStaticText(
-                "Overlay Opacity (%)", 
-                font, 
+                "Overlay Opacity (%)",
+                font,
                 textBounds);
             composer.AddSlider(
                 value =>
@@ -134,6 +133,7 @@ namespace ProspectingPlus.Client.GUI
                 ToggleAllOres(true);
                 return;
             }
+
             var elem = SingleComposer.GetDropDown("oreList");
             elem.listMenu.SelectedIndices = new int[_client.ClientState.EnabledOreKeys.Count];
             var switches = (GuiElementSwitch[]) _switchesField?.GetValue(elem.listMenu);
