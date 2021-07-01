@@ -18,7 +18,6 @@ namespace ProspectingPlus.Server
         private readonly IServerNetworkChannel _chan;
         private readonly ProspectingPlusServerState _serverState;
         private readonly OreList _oreList;
-        private readonly string _filePath;
 
         // TODO: Support the groups system.
 

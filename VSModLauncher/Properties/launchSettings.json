@@ -3,7 +3,7 @@
     "start-debug-in-game": {
       "commandName": "Executable",
       "executablePath": "$(VINTAGE_STORY)/Vintagestory.exe",
-      "commandLineArgs": "--dataPath \"G:\\VintagestoryModding\\SaveData\" --addModPath=\"$(SolutionDir)VSModLauncher\\bin\\$(Configuration)\\\\\" \"$(SolutionDir)ProspectingPlus\\bin\\$(Configuration)\\\\\" "
+      "commandLineArgs": "--dataPath \"$(VINTAGE_STORY_DATA)\" --addModPath=\"$(SolutionDir)VSModLauncher\\bin\\$(Configuration)\\\\\" \"$(SolutionDir)ProspectingPlus\\bin\\$(Configuration)\\\\\" "
     }
   }
 }
