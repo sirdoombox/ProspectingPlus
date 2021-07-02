@@ -22,7 +22,7 @@ namespace ProspectingPlus.Client
 
         private Dictionary<OreDensity, LoadedTexture> _textureMap;
 
-        private List<string> _oreFilter = new List<string>();
+        private List<string> _oreFilter;
         private OreDensity _densityMinimum;
 
         public override string Title => nameof(ProspectingOverlayLayer);
@@ -96,6 +96,8 @@ namespace ProspectingPlus.Client
 
         private IEnumerable<ProspectingMapComponent> FilteredComponents()
         {
+            if (_oreFilter is null)
+                return _components;
             return _components
                 .Where(comp =>
                     comp.Report.OreReports.Any(x =>

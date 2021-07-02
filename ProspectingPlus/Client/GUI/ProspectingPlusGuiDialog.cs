@@ -27,9 +27,6 @@ namespace ProspectingPlus.Client.GUI
 
         public override string ToggleKeyCombinationCode => null;
 
-        // TODO: Implement toggling regular chat printout for the propick.
-        // TODO: Implement alpha slider for the overlay.
-
         public ProspectingPlusGuiDialog(ICoreClientAPI capi) : base(capi)
         {
             _overlayLayer = (ProspectingOverlayLayer) capi.ModLoader
