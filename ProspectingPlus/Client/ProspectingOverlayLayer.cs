@@ -42,7 +42,9 @@ namespace ProspectingPlus.Client
 
         private void OnChunkReportReceived(ProPickChunkReport report)
         {
-            var tex = _textureMap[report.OreReports.OrderByDescending(x => x.Density).First().Density];
+            var tex = report.OreReports.Count <= 0
+                ? _textureMap[OreDensity.Unknown]
+                : _textureMap[report.OreReports.OrderByDescending(x => x.Density).First().Density];
             _components.Add(new ProspectingMapComponent(_api, report, tex));
         }
 

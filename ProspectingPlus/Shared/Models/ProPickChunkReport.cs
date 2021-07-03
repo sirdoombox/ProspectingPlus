@@ -19,8 +19,11 @@ namespace ProspectingPlus.Shared.Models
             PlayerName = packet.PlayerName;
             ChunkX = packet.ChunkX;
             ChunkZ = packet.ChunkZ;
-            OreReports = packet.OreKeys
-                .Select((t, i) => new ProPickOreReport(t, packet.Ppts[i], packet.Densities[i])).ToList();
+            if (!(OreReports is null))
+                OreReports = packet.OreKeys
+                    .Select((t, i) => new ProPickOreReport(t, packet.Ppts[i], packet.Densities[i])).ToList();
+            else
+                OreReports = new List<ProPickOreReport>();
         }
 
         [JsonConstructor]
