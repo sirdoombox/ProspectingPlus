@@ -29,7 +29,7 @@ namespace ProspectingPlus.Server
                 .Select(x => $"ore-{x.Code}")
                 .Distinct()
                 .Where(x => x != Lang.Get(x))
-                .OrderByDescending(x => Lang.Get(x))
+                .OrderBy(x => Lang.Get(x))
                 .ToList());
             _chan = _api.Network.RegisterChannelAndTypes();
             api.Event.PlayerNowPlaying += OnPlayerReady;

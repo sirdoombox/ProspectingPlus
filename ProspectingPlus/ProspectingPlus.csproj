@@ -30,7 +30,7 @@
       </PropertyGroup>
   </Project> 
   -->
-  <Import Project="..\paths.csproj"/>
+  <Import Project="..\paths.csproj" />
 
   <PropertyGroup Label="VSModTemplate Debug Properties" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>

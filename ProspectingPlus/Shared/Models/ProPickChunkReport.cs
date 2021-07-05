@@ -19,7 +19,7 @@ namespace ProspectingPlus.Shared.Models
             PlayerName = packet.PlayerName;
             ChunkX = packet.ChunkX;
             ChunkZ = packet.ChunkZ;
-            if (!(OreReports is null))
+            if (!(packet.OreKeys is null))
                 OreReports = packet.OreKeys
                     .Select((t, i) => new ProPickOreReport(t, packet.Ppts[i], packet.Densities[i])).ToList();
             else

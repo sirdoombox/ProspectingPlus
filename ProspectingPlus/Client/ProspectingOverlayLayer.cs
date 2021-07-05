@@ -33,6 +33,7 @@ namespace ProspectingPlus.Client
             _api = api;
             _chunkSize = api.World.BlockAccessor.ChunkSize;
             _client = api.ModLoader.GetModSystem<ProspectingPlusSystem>().Client;
+            _isOverlayEnabled = _client.ClientState.OverlayEnabled;
             _client.OnOverlayToggled += OnOverlayToggled;
             _client.OnChunkReportReceived += OnChunkReportReceived;
             _oreFilter = _client.ClientState.EnabledOreKeys;

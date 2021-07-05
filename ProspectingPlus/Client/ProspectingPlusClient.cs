@@ -25,10 +25,12 @@ namespace ProspectingPlus.Client
         public ProspectingPlusClient(ICoreClientAPI api)
         {
             _api = api;
-            var mapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
-            mapManager.RegisterMapLayer<ProspectingOverlayLayer>(ModConstants.MapLayerName);
-
+            
             ClientState = ModDataUtil.GetOrCreateDefault<ProspectingPlusClientState>(_api.World.SavegameIdentifier);
+            
+            var mapManager = _api.ModLoader.GetModSystem<WorldMapManager>();
+            mapManager.RegisterMapLayer<ProspectingOverlayLayer>(nameof(ProspectingOverlayLayer));
+            mapManager.RegisterMapLayer<GridOverlayLayer>(nameof(GridOverlayLayer));
 
             _api.Event.LeftWorld += () => ClientState.WriteToDisk(_api.World.SavegameIdentifier);
 
