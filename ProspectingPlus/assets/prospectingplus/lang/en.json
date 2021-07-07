@@ -1,0 +1,11 @@
+{
+  "gui-enablechatreports":"Chat Reports Enabled?",
+  "gui-overlayopacity":"Overlay Opacity (%)",
+  "gui-gridenabled":"Grid Enabled?",
+  "gui-gridopacity":"Grid Opacity (%)",
+  "gui-toggleall":"Toggle All",
+  "gui-togglenone":"Toggle None",
+  "gui-minisculeamounts":"Miniscule Amounts",
+  "map-reportfrom":"Prospecting Report From {0}",
+  "map-minisculeamounts":"Miniscule Amounts Of"
+}

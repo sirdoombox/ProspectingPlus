@@ -1,0 +1,11 @@
+{
+  "gui-enablechatreports":"Chattrapporter aktiverade?",
+  "gui-overlayopacity":"Överlagrets opacitet (%)",
+  "gui-gridenabled":"Rutnät aktiverat?",
+  "gui-gridopacity":"Rutnätets opacitet (%)",
+  "gui-toggleall":"Visa alla",
+  "gui-togglenone":"Visa inga",
+  "gui-minisculeamounts":"Minimal Mängd",
+  "map-reportfrom":"Prospekteringsrapport från {0}",
+  "map-minisculeamounts":"Minimal Mängd"
+}

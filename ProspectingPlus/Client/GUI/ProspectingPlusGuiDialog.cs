@@ -54,7 +54,7 @@ namespace ProspectingPlus.Client.GUI
             var composer = capi.Gui.CreateCompo("prospectingPlusConfigGui", dialogBounds)
                 .AddShadedDialogBG(bgBounds, false)
                 .BeginChildElements(bgBounds);
-            composer.AddStaticText("Enable Chat Reports?", font, textBounds);
+            composer.AddStaticText(Lang.Get("prospectingplus:gui-enablechatreports"), font, textBounds);
             composer.AddSwitch(
                 value => { _client.ClientState.TextReportsEnabled = value; },
                 switchBounds,
@@ -63,7 +63,7 @@ namespace ProspectingPlus.Client.GUI
             textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
             switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
             composer.AddStaticText(
-                "Overlay Opacity (%)",
+                Lang.Get("prospectingplus:gui-overlayopacity"),
                 font,
                 textBounds);
             composer.AddSlider(
@@ -77,7 +77,10 @@ namespace ProspectingPlus.Client.GUI
                 "opacitySlider");
             textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
             switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
-            composer.AddStaticText("Grid Enabled?", font, textBounds);
+            composer.AddStaticText(
+                Lang.Get("prospectingplus:gui-gridenabled"), 
+                font, 
+                textBounds);
             composer.AddSwitch(
                 value => { _client.ClientState.GridEnabled = value; },
                 switchBounds,
@@ -86,7 +89,7 @@ namespace ProspectingPlus.Client.GUI
             textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
             switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
             composer.AddStaticText(
-                "Grid Opacity (%)",
+                Lang.Get("prospectingplus:gui-gridopacity"),
                 font,
                 textBounds);
             composer.AddSlider(
@@ -99,9 +102,9 @@ namespace ProspectingPlus.Client.GUI
                 switchBounds.FlatCopy().WithFixedWidth(170),
                 "gridOpacitySlider");
             var buttonBounds = textBounds.BelowCopy(fixedDeltaY: 10).WithFixedWidth(350);
-            composer.AddSmallButton("Toggle All", () => ToggleAllOres(true), buttonBounds);
+            composer.AddSmallButton(Lang.Get("prospectingplus:gui-toggleall"), () => ToggleAllOres(true), buttonBounds);
             buttonBounds = buttonBounds.BelowCopy(fixedDeltaY: 5);
-            composer.AddSmallButton("Toggle None", () => ToggleAllOres(false), buttonBounds);
+            composer.AddSmallButton(Lang.Get("prospectingplus:gui-togglenone"), () => ToggleAllOres(false), buttonBounds);
             buttonBounds = buttonBounds.BelowCopy(fixedDeltaY: 10);
             composer.AddMultiSelectDropDown(
                 _oreList.ToArray(),

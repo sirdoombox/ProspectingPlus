@@ -22,7 +22,9 @@ namespace ProspectingPlus.Shared.Extensions
         public static string ToLangKey(this OreDensity oreDensity, bool sentenceLike = true)
         {
             return oreDensity is OreDensity.Miniscule
-                ? sentenceLike ? "Miniscule Amounts Of" : "Miniscule Amounts"
+                ? sentenceLike 
+                    ? $"{Lang.Get("prospectingplus:map-minisculeamounts")}" 
+                    : Lang.Get("prospectingplus:gui-minisculeamounts")
                 : $"propick-density-{oreDensity.ToString().ToLower()}";
         }
 

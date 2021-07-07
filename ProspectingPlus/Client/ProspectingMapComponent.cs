@@ -32,7 +32,7 @@ namespace ProspectingPlus.Client
 
             var sb = new StringBuilder();
             sb.AppendLine(
-                $"-- Prospecting Report From {Report.PlayerName} --");
+                $"-- {Lang.Get("prospectingplus:map-reportfrom", Report.PlayerName)} --");
             foreach (var oreRep in Report.OreReports.OrderByDescending(x => x.Density).ThenByDescending(x => x.Ppt))
                 sb.AppendLine($"{Lang.Get(oreRep.Density.ToLangKey())} {Lang.Get(oreRep.OreKey)} - {oreRep.Ppt:0.##}‰");
             _hoverText = sb.ToString();
