@@ -104,4 +104,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\ProspectingPlus\lang" />
+  </ItemGroup>
 </Project>

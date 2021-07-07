@@ -20,6 +20,7 @@ namespace ProspectingPlus.Client.GUI
             typeof(GuiElementListMenu).GetField("switches", BindingFlags.Instance | BindingFlags.NonPublic);
 
         private readonly ProspectingOverlayLayer _overlayLayer;
+        private readonly GridOverlayLayer _gridLayer;
         private readonly ProspectingPlusClient _client;
 
         private bool _isSetup;
@@ -29,10 +30,9 @@ namespace ProspectingPlus.Client.GUI
 
         public ProspectingPlusGuiDialog(ICoreClientAPI capi) : base(capi)
         {
-            _overlayLayer = (ProspectingOverlayLayer) capi.ModLoader
-                .GetModSystem<WorldMapManager>()
-                .MapLayers
-                .FirstOrDefault(x => x is ProspectingOverlayLayer);
+            var mapLayers = capi.ModLoader.GetModSystem<WorldMapManager>().MapLayers;
+            _overlayLayer = (ProspectingOverlayLayer)mapLayers.FirstOrDefault(x => x is ProspectingOverlayLayer);
+            _gridLayer = (GridOverlayLayer) mapLayers.FirstOrDefault(x => x is GridOverlayLayer);
             _client = capi.ModLoader.GetModSystem<ProspectingPlusSystem>().Client;
         }
 
@@ -75,6 +75,29 @@ namespace ProspectingPlus.Client.GUI
                 },
                 switchBounds.FlatCopy().WithFixedWidth(170),
                 "opacitySlider");
+            textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
+            switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
+            composer.AddStaticText("Grid Enabled?", font, textBounds);
+            composer.AddSwitch(
+                value => { _client.ClientState.GridEnabled = value; },
+                switchBounds,
+                "gridOverlayEnabled",
+                25);
+            textBounds = textBounds.BelowCopy(fixedDeltaY: 10);
+            switchBounds = switchBounds.BelowCopy(fixedDeltaY: 10);
+            composer.AddStaticText(
+                "Grid Opacity (%)",
+                font,
+                textBounds);
+            composer.AddSlider(
+                value =>
+                {
+                    _client.ClientState.GridOpacityPercent = value;
+                    _gridLayer.ModifyAlpha(value);
+                    return true;
+                },
+                switchBounds.FlatCopy().WithFixedWidth(170),
+                "gridOpacitySlider");
             var buttonBounds = textBounds.BelowCopy(fixedDeltaY: 10).WithFixedWidth(350);
             composer.AddSmallButton("Toggle All", () => ToggleAllOres(true), buttonBounds);
             buttonBounds = buttonBounds.BelowCopy(fixedDeltaY: 5);
@@ -100,7 +123,11 @@ namespace ProspectingPlus.Client.GUI
             SingleComposer.GetSwitch("enableChatReports")
                 .SetValue(_client.ClientState.TextReportsEnabled);
             SingleComposer.GetSlider("opacitySlider")
-                .SetValues(_client.ClientState.OverlayOpacityPercent, 0, 100, 1, "%");
+                .SetValues(_client.ClientState.OverlayOpacityPercent, 1, 100, 1, "%");
+            SingleComposer.GetSwitch("gridOverlayEnabled")
+                .SetValue(_client.ClientState.GridEnabled);
+            SingleComposer.GetSlider("gridOpacitySlider")
+                .SetValues(_client.ClientState.GridOpacityPercent, 1, 100, 1, "%");
             ToggleSavedOres();
         }
 
