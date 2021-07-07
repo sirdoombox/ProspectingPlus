@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using Vintagestory.API.Common;
+using System.Reflection;
 using Vintagestory.API.MathTools;
+using Vintagestory.GameContent;
 
 namespace ProspectingPlus.Shared.Utils
 {
-    public class MapDB : SQLiteDBConnection
+    public class MapDBUtil
     {
         private SQLiteCommand _getAllMapChunksCommand;
         
-        public MapDB(ILogger logger) : base(logger)
+        public MapDBUtil(ChunkMapLayer chunkMapLayer)
         {
-            
-        }
-
-        public override void OnOpened()
-        {
-            _getAllMapChunksCommand = sqliteConn.CreateCommand();
+            var mapDb = typeof(ChunkMapLayer)
+                .GetField("mapdb", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.GetValue(chunkMapLayer);
+            var conn = typeof(MapDB)
+                .GetField("sqliteConn", BindingFlags.Instance | BindingFlags.NonPublic)
+                ?.GetValue(mapDb);
+            _getAllMapChunksCommand = ((SQLiteConnection) conn).CreateCommand();
             _getAllMapChunksCommand.CommandText = "SELECT position FROM mappiece";
             _getAllMapChunksCommand.Prepare();
         }
@@ -32,16 +34,14 @@ namespace ProspectingPlus.Shared.Utils
             }
         }
 
-        public override void Close()
+        public void Close()
         {
             _getAllMapChunksCommand?.Dispose();
-            base.Close();
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
             _getAllMapChunksCommand?.Dispose();
-            base.Dispose();
         }
     }
 }

@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using ProspectingPlus.ModSystem;
 using ProspectingPlus.Shared.Extensions;
+using ProspectingPlus.Shared.Utils;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
 using Vintagestory.API.MathTools;
 using Vintagestory.GameContent;
-using MapDB = ProspectingPlus.Shared.Utils.MapDB;
 
 namespace ProspectingPlus.Client
 {
@@ -28,9 +28,9 @@ namespace ProspectingPlus.Client
         {
             _api = api;
             _client = api.ModLoader.GetModSystem<ProspectingPlusSystem>().Client;
-            var mapDb = new MapDB(api.Logger);
-            var err = string.Empty;
-            mapDb.OpenOrCreate(GetMapDbFilePath(), ref err, false, false, false);
+            var chunkMap = api.ModLoader.GetModSystem<WorldMapManager>().MapLayers
+                .FirstOrDefault(x => x is ChunkMapLayer);
+            var mapDb = new MapDBUtil((ChunkMapLayer)chunkMap);
             _chunkSize = api.World.BlockAccessor.ChunkSize;
             GenerateGridChunkTexture(_client.ClientState.GridOpacityPercent);
             var chunks = mapDb.GetExploredMapChunks();
@@ -71,13 +71,6 @@ namespace ProspectingPlus.Client
                 return;
             foreach (var component in _toRender)
                 component.Value.Render(mapElem, dt);
-        }
-
-        private string GetMapDbFilePath()
-        {
-            var str = Path.Combine(GamePaths.DataPath, "Maps");
-            GamePaths.EnsurePathExists(str);
-            return Path.Combine(str, api.World.SavegameIdentifier + ".db");
         }
 
         private int[] GenerateGridArrWithColor(int color)
